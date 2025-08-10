@@ -69,7 +69,7 @@ describe('Calculator component', () => {
 
     it('displays the exact calculated age correctly', () => {
         // Setup birth date and today’s date info
-        const input_date = new Date(2025, 7, 5); // August 4, 2025 (month 0-based)
+        const input_date = new Date(2025, 7, 7); // August 4, 2025 (month 0-based)
         const birthDate = new Date(2000, 4, 15); // May 15, 2000
 
         let years = input_date.getFullYear() - birthDate.getFullYear(); // 25
