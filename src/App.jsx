@@ -1,9 +1,12 @@
 
-import Calculator from "./Components/Age"
+import ErrorBoundary from './Components/ErrorBoundary';
+import CalculatorTs from './Components/Updated_Claculator';
 function App() {
   return (
     <>
-    <Calculator/>
+      <ErrorBoundary>
+        <CalculatorTs />
+      </ErrorBoundary>
     </>
   )
 }

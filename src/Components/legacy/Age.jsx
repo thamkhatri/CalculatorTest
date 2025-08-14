@@ -1,5 +1,23 @@
 import React, { useReducer } from 'react';
+import styled, { css } from 'styled-components';
 
+import {
+  PageContainer,
+  Card,
+  InputGroup,
+  InputWrapper,
+  Label,
+  Input,
+  ErrorText,
+  GeneralError,
+  DividerWrapper,
+  DividerLine,
+  CalculateButton,
+  AgeDisplay,
+  AgeLine,
+  AgeNumber,
+  AgeLabel
+} from '../Calculator.styles';
 const initialState = {
   day: '',
   month: '',
@@ -27,6 +45,7 @@ function reducer(state, action) {
       return state;
   }
 }
+
 
 const Calculator = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -101,15 +120,15 @@ const Calculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-2xl rounded-br-[100px] shadow-sm w-full max-w-lg relative">
-        <div className="flex gap-4 mb-8">
+    <PageContainer>
+      <Card>
+        <InputGroup>
           {['day', 'month', 'year'].map((field) => (
-            <div key={field} className="flex flex-col">
-              <label className="text-xs tracking-widest font-bold text-gray-600 mb-1 flex justify-start">
+            <InputWrapper key={field}>
+              <Label htmlFor={`input-${field}`}>
                 {field.toUpperCase()}
-              </label>
-              <input
+              </Label>
+              <Input
                 id={`input-${field}`}
                 data-testid={`input-${field}`}
                 type="text"
@@ -119,34 +138,30 @@ const Calculator = () => {
                   dispatch({ type: 'SET_INPUT', field: field, value: e.target.value })
                 }
                 onKeyDown={(e) => e.key === 'Enter' && calculateAge()}
-                className={`w-25 px-3 py-2 border rounded-lg font-bold text-2xl text-gray-300 focus:outline-purple-500 ${
-                  errors[field] ? 'border-red-500' : ''
-                }`}
+                hasError={!!errors[field]}
               />
               {errors[field] && (
-                <span data-testid={`error-${field}`} className="text-red-500 text-xs mt-1">
+                <ErrorText data-testid={`error-${field}`}>
                   {errors[field]}
-                </span>
+                </ErrorText>
               )}
-            </div>
+            </InputWrapper>
           ))}
-        </div>
+        </InputGroup>
 
         {errors.general && (
-          <p className="text-red-500 text-sm mb-4 text-left">{errors.general}</p>
+          <GeneralError>{errors.general}</GeneralError>
         )}
 
-        <div className="relative my-6 bg-amber-300">
-          <hr className="border-t border-gray-200" />
-          <button
+        <DividerWrapper>
+          <DividerLine />
+          <CalculateButton
             id="calculate-button"
             data-testid="submit-button"
             onClick={calculateAge}
-            className="absolute right-0 top-32 bg-purple-600 p-4 rounded-full text-white hover:bg-purple-700 transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -154,35 +169,351 @@ const Calculator = () => {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
-          </button>
-        </div>
+          </CalculateButton>
+        </DividerWrapper>
 
-        <div className="text-5xl font-bold leading-snug tracking-wide text-black space-y-2">
-          <p className="flex justify-start">
-            <span id="output-years" className="text-purple-600 italic text-6xl">
-              {age ? `${age.years}` : '--'}{' '}
-            </span>
-            <span className="italic text-6xl">years</span>
-          </p>
-          <p className="flex justify-start">
-            <span id="output-months" className="text-purple-600 italic text-6xl">
-              {age ? `${age.months}` : '--'}{' '}
-            </span>
-            <span className="italic text-6xl">months</span>
-          </p>
-          <p className="flex justify-start">
-            <span id="output-days" className="text-purple-600 italic text-6xl">
-              {day && age ? `${age.days}` : '--'}{' '}
-            </span>
-            <span className="italic text-6xl">days</span>
-          </p>
-        </div>
-      </div>
-    </div>
+        <AgeDisplay>
+          <AgeLine>
+            <AgeNumber id="output-years">{age ? age.years : '--'}</AgeNumber>
+            <AgeLabel>years</AgeLabel>
+          </AgeLine>
+          <AgeLine>
+            <AgeNumber id="output-months">{age ? age.months : '--'}</AgeNumber>
+            <AgeLabel>months</AgeLabel>
+          </AgeLine>
+          <AgeLine>
+            <AgeNumber id="output-days">{day && age ? age.days : '--'}</AgeNumber>
+            <AgeLabel>days</AgeLabel>
+          </AgeLine>
+        </AgeDisplay>
+      </Card>
+    </PageContainer>
   );
 };
 
 export default Calculator;
+
+// // Styled Components
+// const PageContainer = styled.div`
+//   min-height: 100vh;
+//   background-color: #f3f4f6; /* Tailwind gray-100 */
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 1rem;
+// `;
+
+// const Card = styled.div`
+//   background: white;
+//   padding: 2rem;
+//   border-radius: 1.5rem;
+//   border-bottom-right-radius: 100px;
+//   box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+//   width: 100%;
+//   max-width: 32rem;
+//   position: relative;
+// `;
+
+// const InputGroup = styled.div`
+//   display: flex;
+//   gap: 1rem;
+//   margin-bottom: 2rem;
+// `;
+
+// const InputWrapper = styled.div`
+//   display: flex;
+//   flex-direction: column;
+// `;
+
+// const Label = styled.label`
+//   font-size: 0.625rem; /* 10px */
+//   letter-spacing: 0.2em;
+//   font-weight: 700;
+//   color: #4b5563; /* gray-600 */
+//   margin-bottom: 0.25rem;
+//   display: flex;
+//   justify-content: flex-start;
+// `;
+
+// const Input = styled.input`
+//   width: 6rem;
+//   padding: 0.5rem 0.75rem;
+//   border: 1px solid #d1d5db; /* gray-300 */
+//   border-radius: 0.5rem;
+//   font-weight: 700;
+//   font-size: 1.5rem;
+//   color: #9ca3af; /* gray-400 */
+//   outline-color: #7c3aed; /* purple-500 */
+
+//   ${(props) =>
+//     props.hasError &&
+//     css`
+//       border-color: #ef4444; /* red-500 */
+//     `}
+// `;
+
+// const ErrorText = styled.span`
+//   color: #ef4444; /* red-500 */
+//   font-size: 0.75rem;
+//   margin-top: 0.25rem;
+// `;
+
+// const GeneralError = styled.p`
+//   color: #ef4444;
+//   font-size: 0.875rem;
+//   margin-bottom: 1rem;
+//   text-align: left;
+// `;
+
+// const DividerWrapper = styled.div`
+//   position: relative;
+//   margin: 1.5rem 0;
+//   background-color: #fbbf24; /* amber-300 */
+// `;
+
+// const DividerLine = styled.hr`
+//   border-top: 1px solid #e5e7eb; /* gray-200 */
+//   margin: 0;
+// `;
+
+// const CalculateButton = styled.button`
+//   position: absolute;
+//   right: 0;
+//   top: -1.5rem;
+//   background-color: #7c3aed; /* purple-600 */
+//   padding: 1rem;
+//   border-radius: 9999px;
+//   color: white;
+//   cursor: pointer;
+//   transition: background-color 0.3s;
+
+//   &:hover {
+//     background-color: #6d28d9; /* purple-700 */
+//   }
+
+//   svg {
+//     height: 1.5rem;
+//     width: 1.5rem;
+//   }
+// `;
+
+// const AgeDisplay = styled.div`
+//   font-size: 3rem;
+//   font-weight: 700;
+//   line-height: 1.1;
+//   letter-spacing: 0.05em;
+//   color: black;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 0.5rem;
+// `;
+
+// const AgeLine = styled.p`
+//   display: flex;
+//   justify-content: flex-start;
+//   align-items: baseline;
+// `;
+
+// const AgeNumber = styled.span`
+//   color: #7c3aed; /* purple-600 */
+//   font-style: italic;
+//   font-size: 3.75rem;
+//   margin-right: 0.25rem;
+// `;
+
+// const AgeLabel = styled.span`
+//   font-style: italic;
+//   font-size: 3rem;
+// `;
+
+
+// this is code with useReducer hook 
+
+// import React, { useReducer } from 'react';
+
+// const initialState = {
+//   day: '',
+//   month: '',
+//   year: '',
+//   errors: { day: '', month: '', year: '', general: '' },
+//   age: null,
+// };
+
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case 'SET_INPUT':
+//       return { ...state, [action.field]: action.value };
+//     case 'SET_ERROR':
+//       return {
+//         ...state,
+//         errors: { ...state.errors, [action.field]: action.message },
+//       };
+//     case 'CLEAR_ERRORS':
+//       return { ...state, errors: { day: '', month: '', year: '', general: '' } };
+//     case 'SET_AGE':
+//       return { ...state, age: action.age };
+//     case 'RESET_AGE':
+//       return { ...state, age: null };
+//     default:
+//       return state;
+//   }
+// }
+
+// const Calculator = () => {
+//   const [state, dispatch] = useReducer(reducer, initialState);
+//   const { day, month, year, errors, age } = state;
+
+//   const calculateAge = () => {
+//     dispatch({ type: 'CLEAR_ERRORS' });
+//     let valid = true;
+
+//     const d_day = parseInt(day, 10);
+//     const d_month = parseInt(month, 10);
+//     const d_year = parseInt(year, 10);
+
+//     if (day) {
+//       if (isNaN(d_day) || d_day < 1 || d_day > 31) {
+//         dispatch({ type: 'SET_ERROR', field: 'day', message: 'Invalid day' });
+//         valid = false;
+//       }
+//     }
+//     if (!month) {
+//       dispatch({ type: 'SET_ERROR', field: 'month', message: 'Please enter month' });
+//       valid = false;
+//     } else if (isNaN(d_month) || d_month < 1 || d_month > 12) {
+//       dispatch({ type: 'SET_ERROR', field: 'month', message: 'Invalid month' });
+//       valid = false;
+//     }
+//     const currentYear = new Date().getFullYear();
+//     if (!year) {
+//       dispatch({ type: 'SET_ERROR', field: 'year', message: 'Please enter year' });
+//       valid = false;
+//     } else if (isNaN(d_year) || d_year < 1000 || d_year > currentYear) {
+//       dispatch({ type: 'SET_ERROR', field: 'year', message: 'Invalid year' });
+//       valid = false;
+//     }
+
+//     if (!valid) {
+//       dispatch({ type: 'RESET_AGE' });
+//       return;
+//     }
+
+//     const birth = new Date(d_year, d_month - 1, day ? d_day : 1);
+//     const today = new Date();
+
+//     if (birth > today || isNaN(birth.getTime())) {
+//       dispatch({ type: 'SET_ERROR', field: 'general', message: 'Please enter a valid date' });
+//       dispatch({ type: 'RESET_AGE' });
+//       return;
+//     }
+
+//     let years = today.getFullYear() - birth.getFullYear();
+//     let months = today.getMonth() - birth.getMonth();
+//     let days = today.getDate() - birth.getDate();
+
+//     if (days < 0) {
+//       months--;
+//       days += 30;
+//     }
+
+//     if (months < 0) {
+//       years--;
+//       months += 12;
+//     }
+
+//     dispatch({
+//       type: 'SET_AGE',
+//       age: {
+//         years,
+//         months,
+//         days: day ? days : null,
+//       },
+//     });
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+//       <div className="bg-white p-8 rounded-2xl rounded-br-[100px] shadow-sm w-full max-w-lg relative">
+//         <div className="flex gap-4 mb-8">
+//           {['day', 'month', 'year'].map((field) => (
+//             <div key={field} className="flex flex-col">
+//               <label className="text-xs tracking-widest font-bold text-gray-600 mb-1 flex justify-start">
+//                 {field.toUpperCase()}
+//               </label>
+//               <input
+//                 id={`input-${field}`}
+//                 data-testid={`input-${field}`}
+//                 type="text"
+//                 placeholder={field === 'year' ? 'YYYY' : field === 'month' ? 'MM' : 'DD'}
+//                 value={state[field]}
+//                 onChange={(e) =>
+//                   dispatch({ type: 'SET_INPUT', field: field, value: e.target.value })
+//                 }
+//                 onKeyDown={(e) => e.key === 'Enter' && calculateAge()}
+//                 className={`w-25 px-3 py-2 border rounded-lg font-bold text-2xl text-gray-300 focus:outline-purple-500 ${
+//                   errors[field] ? 'border-red-500' : ''
+//                 }`}
+//               />
+//               {errors[field] && (
+//                 <span data-testid={`error-${field}`} className="text-red-500 text-xs mt-1">
+//                   {errors[field]}
+//                 </span>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+
+//         {errors.general && (
+//           <p className="text-red-500 text-sm mb-4 text-left">{errors.general}</p>
+//         )}
+
+//         <div className="relative my-6 bg-amber-300">
+//           <hr className="border-t border-gray-200" />
+//           <button
+//             id="calculate-button"
+//             data-testid="submit-button"
+//             onClick={calculateAge}
+//             className="absolute right-0 top-32 bg-purple-600 p-4 rounded-full text-white hover:bg-purple-700 transition"
+//           >
+//             <svg
+//               xmlns="http://www.w3.org/2000/svg"
+//               className="h-6 w-6"
+//               fill="none"
+//               viewBox="0 0 24 24"
+//               stroke="currentColor"
+//               strokeWidth={2}
+//             >
+//               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+//             </svg>
+//           </button>
+//         </div>
+
+//         <div className="text-5xl font-bold leading-snug tracking-wide text-black space-y-2">
+//           <p className="flex justify-start">
+//             <span id="output-years" className="text-purple-600 italic text-6xl">
+//               {age ? `${age.years}` : '--'}{' '}
+//             </span>
+//             <span className="italic text-6xl">years</span>
+//           </p>
+//           <p className="flex justify-start">
+//             <span id="output-months" className="text-purple-600 italic text-6xl">
+//               {age ? `${age.months}` : '--'}{' '}
+//             </span>
+//             <span className="italic text-6xl">months</span>
+//           </p>
+//           <p className="flex justify-start">
+//             <span id="output-days" className="text-purple-600 italic text-6xl">
+//               {day && age ? `${age.days}` : '--'}{' '}
+//             </span>
+//             <span className="italic text-6xl">days</span>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Calculator;
 
 // import React, { useState } from 'react';
 // const Calculator = () => {
